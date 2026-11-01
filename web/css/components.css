@@ -1,0 +1,832 @@
+/* Componentes: botões, campos, sliders, painel de ajustes, avisos, tela inicial, diálogo. */
+
+/* ---------- Ícones ---------- */
+.icon {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-lg {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.6;
+}
+
+/* ---------- Botões ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 550;
+  line-height: 1.2;
+  text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
+  background: var(--surface-2);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Botão só com ícone: alvo de 44 × 44 px, sem moldura. */
+.btn-icon {
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  border-radius: 50%;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.btn-primary:active:not(:disabled) {
+  background: var(--accent);
+  filter: brightness(0.92);
+}
+
+.btn-text {
+  border-color: transparent;
+  background: transparent;
+  color: var(--accent);
+  padding-inline: 10px;
+}
+
+.btn-lg {
+  min-height: 52px;
+  padding-inline: 24px;
+  font-size: 1.05rem;
+  border-radius: 14px;
+}
+
+/* Hover é só um enfeite para quem tem mouse; nada depende dele. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover:not(:disabled) {
+    background: var(--surface-2);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent);
+    filter: brightness(1.08);
+  }
+}
+
+/* Botão de tema: mostra a lua no claro e o sol no escuro. */
+.theme-toggle .icon-sun {
+  display: none;
+}
+
+.theme-toggle[data-theme='dark'] .icon-sun {
+  display: block;
+}
+
+.theme-toggle[data-theme='dark'] .icon-moon {
+  display: none;
+}
+
+/* ---------- Botão play/pausa ---------- */
+.btn-play {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  margin-inline: 4px;
+  padding: 0;
+  border-radius: 50%;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.btn-play:active:not(:disabled) {
+  background: var(--accent);
+  filter: brightness(0.92);
+}
+
+.btn-play .icon {
+  width: 26px;
+  height: 26px;
+}
+
+.btn-play .icon-play {
+  fill: currentColor;
+  stroke-width: 1.5;
+}
+
+.btn-play .icon-pause {
+  display: none;
+  stroke-width: 3;
+}
+
+.btn-play[data-state='playing'] .icon-play {
+  display: none;
+}
+
+.btn-play[data-state='playing'] .icon-pause {
+  display: block;
+}
+
+/* Preparando a leitura: anel girando em volta do botão. */
+.btn-play[data-state='loading']::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 3px solid transparent;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Campo de página ---------- */
+.page-input {
+  width: 3.6em;
+  min-height: 40px;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.page-input:disabled {
+  opacity: 0.5;
+}
+
+/* ---------- Player: legenda e progresso ---------- */
+.player-caption {
+  min-height: calc(2 * 1.45em);
+  font-size: 0.98rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.player-caption.is-muted {
+  color: var(--text-muted);
+}
+
+.player-bar.is-unavailable .player-caption {
+  color: var(--warning);
+}
+
+.progress-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progress-label:empty::before {
+  content: '\00a0'; /* mantém a altura da linha */
+}
+
+.progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.3s var(--ease);
+}
+
+/* ---------- Campos do painel ---------- */
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.field-label {
+  font-weight: 600;
+}
+
+.field-value {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.field-hint {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.select,
+.text-input {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.select:disabled,
+.text-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Slider: área de toque de 44 px, trilho fino. */
+.range {
+  width: 100%;
+  height: var(--tap);
+  margin: 0;
+  background: transparent;
+  accent-color: var(--accent);
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.range:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.range-ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Grupo de opções (fieldset sem a moldura padrão do navegador). */
+.fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.fieldset > legend {
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+/* Opção grande (rádio + título + explicação): a linha inteira é o alvo de toque. */
+.choice-list {
+  display: grid;
+  gap: 8px;
+}
+
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: var(--tap);
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.choice input[type='radio'] {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--accent);
+  cursor: inherit;
+}
+
+.choice:has(input:checked) {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.choice:has(input:focus-visible) {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.choice.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.choice-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.choice-title {
+  font-weight: 600;
+}
+
+.choice-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+/* Estado da voz de IA (servidor local). */
+.engine-status {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  font-size: 0.92rem;
+}
+
+.engine-status-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.engine-status-detail,
+.engine-status-hint {
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.engine-status .btn {
+  justify-self: start;
+  margin-top: 2px;
+}
+
+.engine-status code,
+.note code {
+  padding: 0.05em 0.35em;
+  border-radius: 5px;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+
+/* Bolinha de estado: cinza (verificando), verde (pronta), amarela (carregando), vermelha (indisponível). */
+.status-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transform: translateY(1px);
+}
+
+.engine-status[data-state='ready'] .status-dot {
+  background: var(--success);
+}
+
+.engine-status[data-state='loading'] .status-dot {
+  background: var(--warning);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.engine-status[data-state='checking'] .status-dot {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.engine-status[data-state='unavailable'] .status-dot {
+  background: var(--danger);
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---------- Player: aviso de voz carregando e selo do idioma ---------- */
+.player-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.spinner {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.progress-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.progress-head .progress-label {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.lang-badge {
+  flex: none;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.note {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  font-size: 0.92rem;
+}
+
+.note-warning {
+  border-left: 4px solid var(--warning);
+}
+
+/* ---------- Painel de ajustes ---------- */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--backdrop);
+  animation: fade-in 0.2s ease;
+}
+
+/* Celular: folha que sobe de baixo. */
+.settings-panel {
+  position: fixed;
+  z-index: 50;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  max-height: 85dvh;
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 18px 18px 0 0;
+  box-shadow: var(--overlay-shadow);
+  transform: translateY(100%);
+  visibility: hidden;
+  transition: transform 0.28s var(--ease), visibility 0s linear 0.28s;
+}
+
+.settings-panel.is-open {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.28s var(--ease), visibility 0s;
+}
+
+/* Alça visual da folha. */
+.settings-panel::before {
+  content: '';
+  align-self: center;
+  width: 40px;
+  height: 4px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.settings-panel:focus-visible {
+  outline: none;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px 4px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-header h2 {
+  font-size: 1.1rem;
+}
+
+.settings-body {
+  display: grid;
+  gap: 22px;
+  padding: 18px 20px max(20px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.settings-actions .btn {
+  flex: 1 1 140px;
+}
+
+/* Computador/tablet: gaveta lateral à direita. */
+@media (min-width: 760px) {
+  .settings-panel {
+    top: 0;
+    bottom: 0;
+    left: auto;
+    width: 380px;
+    max-height: none;
+    border-radius: 0;
+    border-left: 1px solid var(--border);
+    transform: translateX(100%);
+  }
+
+  .settings-panel::before {
+    display: none;
+  }
+
+  .settings-header {
+    padding-block: 10px;
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+}
+
+/* ---------- Avisos (toasts) ---------- */
+.toast-region {
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  bottom: var(--gap);
+  transform: translateX(-50%);
+  width: min(560px, calc(100% - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px 14px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--overlay-shadow);
+  pointer-events: auto;
+  animation: toast-in 0.22s var(--ease);
+}
+
+.toast[data-type='success'] {
+  border-left-color: var(--success);
+}
+
+.toast[data-type='warning'] {
+  border-left-color: var(--warning);
+}
+
+.toast[data-type='error'] {
+  border-left-color: var(--danger);
+}
+
+.toast-message {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block: 8px;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.toast-action {
+  flex: none;
+  font-weight: 650;
+}
+
+.toast-close {
+  flex: none;
+  color: var(--text-muted);
+}
+
+.toast-close .icon {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------- Tela inicial ---------- */
+.welcome-card {
+  width: 100%;
+  max-width: 500px;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 32px 20px;
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.welcome-icon {
+  width: 64px;
+  height: 64px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.welcome-card h2 {
+  font-size: 1.35rem;
+}
+
+.welcome-text {
+  max-width: 34ch;
+  color: var(--text-muted);
+}
+
+.welcome-note {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.welcome-keys {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 16px;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Em telas de toque não há teclado físico: esconde os atalhos. */
+@media (pointer: coarse) and (hover: none) {
+  .welcome-keys {
+    display: none;
+  }
+}
+
+/* ---------- Arrastar e soltar ---------- */
+.drop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--backdrop);
+  pointer-events: none; /* os eventos de arrastar continuam chegando à janela */
+  animation: fade-in 0.15s ease;
+}
+
+.drop-overlay-inner {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: min(480px, 100%);
+  padding: 48px 24px;
+  border: 3px dashed var(--accent);
+  border-radius: 24px;
+  background: var(--surface);
+  color: var(--accent);
+  font-size: 1.15rem;
+  font-weight: 650;
+  text-align: center;
+  box-shadow: var(--overlay-shadow);
+}
+
+/* ---------- Diálogo (senha) ---------- */
+.dialog {
+  width: min(420px, calc(100vw - 32px));
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--overlay-shadow);
+}
+
+.dialog::backdrop {
+  background: var(--backdrop);
+}
+
+.dialog-form {
+  display: grid;
+  gap: 12px;
+  padding: 22px 20px 18px;
+}
+
+.dialog-form h2 {
+  font-size: 1.15rem;
+}
+
+.dialog-file {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.dialog-file:empty {
+  display: none;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* ---------- Menos movimento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* O anel de "preparando" não gira; fica parado como indicação. */
+  .btn-play[data-state='loading']::after {
+    border-color: var(--accent);
+    opacity: 0.5;
+  }
+
+  .spinner {
+    border-color: var(--accent);
+    opacity: 0.5;
+  }
+}

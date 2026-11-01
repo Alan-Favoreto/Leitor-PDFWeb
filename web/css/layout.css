@@ -1,0 +1,175 @@
+/* Layout: cabeçalho em cima, documento rolável no meio, player embaixo. */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overflow: hidden; /* quem rola é a área do documento */
+}
+
+.app {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ---------- Cabeçalho ---------- */
+.app-header {
+  position: relative;
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 6px max(8px, env(safe-area-inset-right)) 6px max(8px, env(safe-area-inset-left));
+  padding-top: max(6px, env(safe-area-inset-top));
+}
+
+/* Celular: duas linhas (arquivo/título/tema/ajustes em cima; páginas e zoom embaixo). */
+.toolbar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    'open title theme settings'
+    'pages pages zoom zoom';
+  align-items: center;
+  column-gap: 4px;
+  row-gap: 2px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.tb-open { grid-area: open; }
+.tb-title { grid-area: title; }
+.tb-pages { grid-area: pages; justify-self: start; }
+.tb-zoom { grid-area: zoom; justify-self: end; }
+.tb-theme { grid-area: theme; }
+.tb-settings { grid-area: settings; }
+
+/* Telas largas: tudo numa linha só. */
+@media (min-width: 760px) {
+  .toolbar {
+    grid-template-columns: auto minmax(0, 1fr) auto auto auto auto;
+    grid-template-areas: 'open title pages zoom theme settings';
+    column-gap: 8px;
+  }
+
+  .tb-zoom {
+    margin-inline: 4px;
+    padding-inline: 8px;
+    border-inline: 1px solid var(--border);
+  }
+}
+
+.doc-title {
+  min-width: 0;
+  padding-inline: 6px;
+  font-size: 1.02rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-inline-start: 4px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.zoom-label {
+  min-width: 3.4em;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Área do documento ---------- */
+.doc-area {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* Contêiner do PdfViewer: precisa de altura definida e rolagem própria. */
+.viewer {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-block: var(--gap);
+}
+
+.viewer:focus-visible {
+  outline-offset: -3px;
+  border-radius: 0;
+}
+
+.welcome {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  padding: var(--gap);
+}
+
+/* ---------- Barra do player ---------- */
+.player-bar {
+  position: relative;
+  z-index: 20;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 8px max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+}
+
+.player-inner {
+  display: grid;
+  gap: 6px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.player-progress {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.player-controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+@media (min-width: 760px) {
+  .player-bar {
+    padding-block: 10px max(10px, env(safe-area-inset-bottom));
+  }
+
+  .player-row {
+    gap: 24px;
+  }
+}

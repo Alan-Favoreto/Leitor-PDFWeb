@@ -1,0 +1,20 @@
+# Leitor de PDF com voz: servidor local + motor Kokoro-82M (obrigatório).
+#
+# Python 3.11 (o kokoro exige < 3.13). O PyTorch NÃO está aqui: o scripts/instalar.* instala
+# torch==2.8.0 / torchaudio==2.8.0 antes, do índice oficial do PyTorch (CUDA 12.6, CUDA 12.8
+# para RTX 50xx, ou CPU). Instalação manual: veja docs/SERVIDOR.md.
+
+aiohttp>=3.10,<4
+soundfile>=0.12
+# numpy 1.x: o Chatterbox (extra opcional) exige < 2 em Python < 3.13; fixado aqui para o
+# ambiente ser o mesmo com ou sem o extra.
+numpy>=1.26,<2
+transformers==5.2.0
+
+# Kokoro-82M (hexgrad, Apache-2.0) e o G2P misaki. O extra [en] traz o espeakng-loader, que
+# já inclui a biblioteca do espeak-ng (pt, es, fr, it, hi): nada para instalar à mão.
+kokoro==0.9.4
+misaki[en,zh]==0.9.4
+# Modelo do spaCy usado pelo misaki em inglês. Sem ele, o misaki tenta baixar com pip na
+# primeira frase em inglês (e falha num venv do uv, que não tem pip).
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl

@@ -1,0 +1,212 @@
+/* Visualizador de PDF: páginas, camada de texto do pdf.js 4 e destaques da leitura.
+   O container (definido pela Interface) precisa de overflow:auto e altura definida. */
+
+.pdf-viewer {
+  --pdf-page-gap: 12px;
+  position: relative;          /* referência para offsetTop das páginas */
+  box-sizing: border-box;
+  width: fit-content;          /* com zoom alto, cresce e permite rolar na horizontal */
+  min-width: 100%;
+  padding: var(--pdf-page-gap) 8px;
+}
+
+.pdf-page {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0 auto var(--pdf-page-gap);
+  background: #fff;            /* a página continua branca no tema escuro */
+  color-scheme: light;
+  box-shadow: var(--page-shadow, 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 14px rgba(0, 0, 0, 0.12));
+  overflow: hidden;
+  isolation: isolate;          /* destaques "multiply" misturam com o canvas da própria página */
+}
+
+.pdf-page:last-child {
+  margin-bottom: 0;
+}
+
+.pdf-page-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Espaço reservado enquanto a página não foi desenhada */
+.pdf-page.is-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border: 3px solid rgba(0, 0, 0, 0.12);
+  border-top-color: var(--accent, #1a73e8);
+  border-radius: 50%;
+  animation: pdf-page-spin 0.9s linear infinite;
+}
+
+.pdf-page.has-error::after {
+  content: 'Não foi possível mostrar esta página.';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  color: #5f6368;
+  font: 14px/1.4 system-ui, sans-serif;
+  text-align: center;
+}
+
+@keyframes pdf-page-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdf-page.is-loading::after {
+    animation: none;
+    border-top-color: rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Camada de texto (mesmas regras essenciais do pdf_viewer.css do pdf.js 4.10.38).
+   O texto é transparente: só serve para selecionar, tocar e destacar. */
+
+.pdf-page .textLayer {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  text-align: initial;
+  opacity: 1;
+  line-height: 1;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  caret-color: CanvasText;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.textLayer :is(span, br) {
+  position: absolute;
+  color: transparent;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+
+.textLayer > :not(.markedContent),
+.textLayer .markedContent span:not(.markedContent) {
+  z-index: 1;
+}
+
+.textLayer span.markedContent {
+  top: 0;
+  height: 0;
+}
+
+.textLayer span[role='img'] {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+.textLayer ::selection {
+  background: rgba(0, 0, 255, 0.25);
+  background: color-mix(in srgb, AccentColor, transparent 75%);
+}
+
+.textLayer br::selection {
+  background: transparent;
+}
+
+.textLayer .endOfContent {
+  display: block;
+  position: absolute;
+  inset: 100% 0 0;
+  z-index: 0;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.textLayer.selecting .endOfContent {
+  top: 0;
+}
+
+/* Páginas giradas (/Rotate): o pdf.js marca a camada com data-main-rotation */
+.textLayer[data-main-rotation='90'] {
+  transform: rotate(90deg) translateY(-100%);
+}
+
+.textLayer[data-main-rotation='180'] {
+  transform: rotate(180deg) translate(-100%, -100%);
+}
+
+.textLayer[data-main-rotation='270'] {
+  transform: rotate(270deg) translateX(-100%);
+}
+
+/* Canvas auxiliar que o TextLayer cria no <body> para medir texto */
+.hiddenCanvasElement {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Destaques da leitura */
+
+.textLayer mark {
+  padding: 0;
+  margin: 0;
+  color: transparent;
+  background: none;
+  border-radius: 3px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.textLayer .hl-sentence {
+  background-color: var(--hl-sentence, rgba(255, 213, 79, 0.45));
+  border-radius: 3px;
+  mix-blend-mode: multiply;    /* efeito de marca-texto: o texto continua escuro */
+}
+
+.textLayer .hl-word {
+  background-color: var(--hl-word, rgba(255, 152, 0, 0.6));
+  border-radius: 3px;
+  mix-blend-mode: multiply;
+}
+
+@media (forced-colors: active) {
+  .textLayer .hl-sentence {
+    background-color: Highlight;
+    mix-blend-mode: normal;
+    opacity: 0.4;
+  }
+
+  .textLayer .hl-word {
+    background-color: Mark;
+    mix-blend-mode: normal;
+    opacity: 0.6;
+  }
+}
+
+/* Celular */
+@media (max-width: 480px) {
+  .pdf-viewer {
+    --pdf-page-gap: 8px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+}

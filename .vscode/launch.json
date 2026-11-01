@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Abrir no Edge (depurar)",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:8090",
+      "webRoot": "${workspaceFolder}/web",
+      "preLaunchTask": "Servidor de voz"
+    },
+    {
+      "name": "Abrir no Chrome (depurar)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:8090",
+      "webRoot": "${workspaceFolder}/web",
+      "preLaunchTask": "Servidor de voz"
+    },
+    {
+      "name": "Abrir no Edge, sem IA (depurar)",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:8090",
+      "webRoot": "${workspaceFolder}/web",
+      "preLaunchTask": "Servidor estático (sem IA)"
+    }
+  ]
+}

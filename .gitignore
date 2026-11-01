@@ -1,0 +1,49 @@
+# Ambiente Python criado pelo instalador (scripts/instalar.*)
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Configuração local do servidor (cada pessoa tem a sua)
+servidor/config.json
+# Vozes clonadas (amostras de voz de cada pessoa)
+servidor/vozes/
+
+# Modelos e caches baixados localmente (são grandes; cada um baixa os seus)
+models/
+modelos/
+.cache/
+.hf_cache/
+hf_cache/
+huggingface/
+*.safetensors
+*.pth
+*.pt
+*.onnx
+*.bin
+
+# Áudios de teste
+*.wav
+*.mp3
+
+# Logs
+*.log
+logs/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores (a pasta .vscode/ é do projeto e vai para o Git)
+.idea/
+*.swp
+*~
+
+# Node (só usado para conferir a sintaxe; o projeto não tem dependências)
+node_modules/

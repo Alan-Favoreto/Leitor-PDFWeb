@@ -1,0 +1,98 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Servidor de voz",
+      "detail": "Liga a voz de IA e o site em http://localhost:8090 (Ctrl+Shift+B). Rode \"Instalar dependências\" antes, na primeira vez.",
+      "type": "process",
+      "windows": {
+        "command": "powershell.exe",
+        "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\scripts\\iniciar.ps1"]
+      },
+      "linux": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/iniciar.sh"]
+      },
+      "osx": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/iniciar.sh"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": { "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8" }
+      },
+      "isBackground": true,
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "problemMatcher": {
+        "owner": "servidor-de-voz",
+        "pattern": { "regexp": "^__nunca_acontece__(.*)$", "message": 1 },
+        "background": {
+          "activeBegin": true,
+          "beginsPattern": "^__nunca_acontece__$",
+          "endsPattern": "[Ss]ervidor pronto|Running on http|Serving HTTP"
+        }
+      }
+    },
+    {
+      "label": "Instalar dependências",
+      "detail": "Cria a pasta .venv e baixa o que a voz de IA precisa (rode uma vez, ou para atualizar)",
+      "type": "process",
+      "windows": {
+        "command": "powershell.exe",
+        "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\scripts\\instalar.ps1"]
+      },
+      "linux": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/instalar.sh"]
+      },
+      "osx": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/instalar.sh"]
+      },
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "dedicated", "focus": true, "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Servidor estático (sem IA)",
+      "detail": "Só o site, com a voz do navegador: python -m http.server na pasta web (porta 8090; pare o Servidor de voz antes)",
+      "type": "process",
+      "command": "python",
+      "args": ["-u", "-m", "http.server", "8090", "--bind", "127.0.0.1", "--directory", "web"],
+      "linux": { "command": "python3" },
+      "osx": { "command": "python3" },
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "problemMatcher": {
+        "owner": "servidor-estatico",
+        "pattern": { "regexp": "^__nunca_acontece__(.*)$", "message": 1 },
+        "background": {
+          "activeBegin": true,
+          "beginsPattern": "^__nunca_acontece__$",
+          "endsPattern": "Serving HTTP"
+        }
+      }
+    },
+    {
+      "label": "Abrir no navegador",
+      "detail": "Abre http://localhost:8090 no navegador padrão (ligue um dos servidores antes)",
+      "type": "process",
+      "windows": {
+        "command": "cmd",
+        "args": ["/c", "start", "", "http://localhost:8090"]
+      },
+      "linux": {
+        "command": "xdg-open",
+        "args": ["http://localhost:8090"]
+      },
+      "osx": {
+        "command": "open",
+        "args": ["http://localhost:8090"]
+      },
+      "presentation": { "reveal": "never", "panel": "shared" },
+      "problemMatcher": []
+    }
+  ]
+}

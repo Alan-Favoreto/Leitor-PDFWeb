@@ -1,0 +1,24 @@
+# Extra opcional: Chatterbox Multilingual V3 (Resemble AI, licença MIT), mais expressivo.
+#
+# Instale DEPOIS do requirements.txt. O pacote chatterbox-tts entra com --no-deps, porque o
+# pyproject dele fixa torch==2.6.0 (trocaria o torch CUDA por outro) e puxa o gradio, que só
+# serve para as demos. O scripts/instalar.* faz isto sozinho:
+#
+#   uv pip install -r requirements-chatterbox.txt
+#   uv pip install --no-deps "chatterbox-tts @ https://github.com/resemble-ai/chatterbox/archive/5de7a54aa4e5e2baadb0182dde554908b48b85c2.zip"
+#
+# (commit de 21/07/2026: o pacote 0.1.7 do PyPI ainda não tem o modelo multilíngue V3.)
+
+librosa==0.11.0
+s3tokenizer==0.3.0
+diffusers==0.29.0
+resemble-perth==1.0.1
+# o perth (marca d'água do Chatterbox) importa pkg_resources, que saiu do setuptools 81+
+setuptools>=70,<81
+conformer==0.3.2
+safetensors==0.5.3
+pyloudnorm>=0.1.1
+omegaconf>=2.3
+# chinês e japonês no Chatterbox
+spacy-pkuseg>=1.0
+pykakasi==2.3.0
